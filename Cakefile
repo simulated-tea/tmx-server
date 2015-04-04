@@ -75,8 +75,6 @@ task 'generate:test', 'Generate a mocha test file', (opts) ->
 
 task 'run:app', 'Run the map server', (opts) ->
   invoke 'generate:src'
-  console.log "Will try to run server"
-  #child = spawn 'node', ['./lib/TMXServer.js'], 'stdio': 'inherit'
   TMXServer = require './lib/TMXServer.js'
   TMXServer.start()
 
