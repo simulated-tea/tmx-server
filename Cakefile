@@ -49,7 +49,6 @@ fs              = require 'fs'
 path            = require 'path'
 util            = require 'util'
 colors          = require 'colors'
-httpServer      = require 'http-server'
 {exec, spawn}   = require 'child_process'
 
 task 'generate:test', 'Generate a mocha test file', (opts) ->
@@ -74,15 +73,18 @@ task 'generate:test', 'Generate a mocha test file', (opts) ->
   process.exit(0)
   return
 
-task 'run', 'Run the map server', (opts) ->
+task 'run:app', 'Run the map server', (opts) ->
+  invoke 'generate:src'
   console.log "Will try to run server"
-  child = spawn 'node', ['lib\TMXServer.js']
-  child.stdout.on 'data', (chunk) -> console.log chunk
-  #server = httpServer.createServer()
-  #server.listen '9099', '127.0.0.1', ->
-  #  console.log 'Starting up http-server, serving '.yellow +
-  #    'on: '.yellow + 'http://127.0.0.1:9099'.cyan
+  #child = spawn 'node', ['./lib/TMXServer.js'], 'stdio': 'inherit'
+  TMXServer = require './lib/TMXServer.js'
+  TMXServer.start()
 
-  #  console.log 'Hit CTRL-C to stop the server'
+task 'run', -> invoke 'run:app'
+task 'r', -> invoke 'run'
 
+task 'generate:src', 'Generate the javascript sources from coffee script', (opts) ->
+  spawn 'coffee', ['--compile', '--output', 'lib/', 'src/'], 'stdio': 'inherit'
 
+task 'build', -> invoke 'generate:src'
+task 'b', -> invoke 'build'
