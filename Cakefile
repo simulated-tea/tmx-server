@@ -1,88 +1,60 @@
-###
-Cakefile for developping
-
-License: MIT License
-
-Features:
-  - Compile CoffeeScript files to JavaScript files
-  - Compile LESS files to CSS files
-  - Join CoffeeScript files to a single JavaScript file
-  - Join CSS files to a single CSS file
-  - Minify a single compiled JavaScript file via YUI compressor
-  - Minify a single compiled CSS file via YUI compressor
-  - Test CoffeeScript files via mocha
-
-Copyright(c) 2012, hashnote.net Alisue allright reserved.
-###
-
-# --- CONFIGURE ---------------------------------------------------
-PATH_TO_TEST_SRC = "src/tests/"
-
-TEMPLATE_TEST = '
-###\n
-# test for #{name} \n
-###\n
-\n
-## Module dependencies\n
-should = require "should"\n
-#{name} = require "../#{name}"\n
-\n
-## Test cases\n
-describe "test #{name}", ->\n
-\n
-  before () ->\n
-    # before test happen\n
-\n
-  describe "#{name}", ->\n
-\n
-    it "should", () ->\n
-\n
-  '
-
-LOG_NAME_TAG_ERROR = "\u001b[31mERROR\u001b[0m -"
-LOG_NAME_TAG_WARN = "\u001b[33mWARNING\u001b[0m -"
-LOG_NAME_TAG_INFO = "\u001b[32mSUCCESS\u001b[0m -"
-
-# -----------------------------------------------------------------
-
 fs              = require 'fs'
 path            = require 'path'
 util            = require 'util'
 colors          = require 'colors'
 {exec, spawn}   = require 'child_process'
 
-task 'generate:test', 'Generate a mocha test file', (opts) ->
-  name = process.argv[3..][0]
+delay = (ms, func) -> setTimeout func, ms
 
-  unless name
-    console.error "#{LOG_NAME_TAG_ERROR} missing test name"
-    process.exit(1)
-    return
-
-  targetFileName = "#{__dirname}/#{PATH_TO_TEST_SRC}#{name}_test.coffee"
-
-  if fs.existsSync(targetFileName)
-    console.error "#{LOG_NAME_TAG_ERROR} test file #{targetFileName} already exists!"
-    process.exit(1)
-    return
-
-  content = TEMPLATE_TEST.replace(/\#\{name\}/g, name)
-
-  fs.writeFileSync(targetFileName, content)
-  console.log "#{LOG_NAME_TAG_INFO} generate test file #{targetFileName}."
-  process.exit(0)
-  return
-
-task 'run:app', 'Run the map server', (opts) ->
+task 'run:app', ->
   invoke 'generate:src'
   TMXServer = require './lib/TMXServer.js'
   TMXServer.start()
 
-task 'run', -> invoke 'run:app'
-task 'r', -> invoke 'run'
+task 'run', 'shortcut: run:app', -> invoke 'run:app'
+task 'r', 'shortcut: run', -> invoke 'run'
 
-task 'generate:src', 'Generate the javascript sources from coffee script', (opts) ->
+task 'generate:src', ->
   spawn 'coffee', ['--compile', '--output', 'lib/', 'src/'], 'stdio': 'inherit'
 
-task 'build', -> invoke 'generate:src'
-task 'b', -> invoke 'build'
+task 'build', 'shortcut: generate:src', -> invoke 'generate:src'
+task 'b', 'shortcut: build', -> invoke 'build'
+
+FileWatcher = (options) ->
+  optsWithDefaults = recursive: true
+  optsWithDefaults.it = options.it for it in options
+
+  options: optsWithDefaults
+  spawnedRun: null
+  readdirTimeout: null
+
+
+FileWatcher.prototype.resetWatcher = ->
+  unless this.readdirTimeout
+    this.spawnedRun.kill 'SIGINT' if this.spawnedRun?
+    this.spawnedRun = spawn 'cake', ['run:app'], 'stdio': 'inherit'
+  this.readdirTimeout = delay 1000, ->
+    this.readdirTimeout = null
+
+FileWatcher.prototype.start = ->
+  this.resetWatcher()
+  fs.watch this.options.file, recursive: this.options.recursive, -> this.resetWatcher()
+    .on 'error', (err) ->
+      console.log 'error occured' + err
+      this.spawnedRun.kill 'SIGINT' if spawnedRun?
+
+
+task 'run:watchful', ->
+  resetWatcher()
+  fs.watch './lib', recursive: true, ->
+      resetWatcher()
+    .on 'error', (err) ->
+      console.log 'error occured' + err
+      spawnedRun.kill 'SIGINT' if spawnedRun?
+
+task 'watch', 'shortcut: run:watchful', -> invoke 'run:watchful'
+task 'w', 'shortcut: watch', -> invoke 'watch'
+
+task 'o', ->
+  child = spawn 'cake', ['r'], 'stdio': 'inherit'
+  delay 3000, -> child.kill 'SIGINT'
