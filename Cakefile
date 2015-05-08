@@ -1,39 +1,42 @@
-fs              = require 'fs'
-path            = require 'path'
-colors          = require 'colors'
-{exec, spawn}   = require 'child_process'
+fs = require 'fs'
+path = require 'path'
+colors = require 'colors'
+{spawn} = require 'child_process'
+rimraf = require 'rimraf'
 
+# cannot use platform tools - they are part of this project - at least build must be independent
 thisIsWindows = process.env.OS? && process.env.OS == 'Windows_NT'
 coffeeBinary = if thisIsWindows then 'coffee.cmd' else 'coffee'
 
+task 'generate:src', ->
+  spawn coffeeBinary, ['--compile', '--bare', '--output', 'lib/', 'src/'], 'stdio': 'inherit'
+
+task 'build', 'shortcut: generate:src', -> invoke 'generate:src'
+task 'b', 'shortcut: build', -> invoke 'build'
+
+task 'clean', ->
+  rimraf './lib', ->
+
+task 'c', 'shortcut: clean', -> invoke 'clean'
+
 task 'run:app', ->
-  invoke 'generate:src'
-  TMXServer = require './lib/TMXServer.js'
+  invoke 'build'
+  TMXServer = require './lib/TMXServer'
   TMXServer.start()
 
 task 'run', 'shortcut: run:app', -> invoke 'run:app'
 task 'r', 'shortcut: run', -> invoke 'run'
 
-task 'generate:src', ->
-  spawn '' + coffeeBinary, ['--compile', '--bare', '--output', 'lib/', 'src/'], 'stdio': 'inherit'
-
-task 'build', 'shortcut: generate:src', -> invoke 'generate:src'
-task 'b', 'shortcut: build', -> invoke 'build'
-
-fileIsPresent = (filename) ->
-  try file = fs.statSync filename
-  file?
-
-if fileIsPresent './lib/util/file-watcher.js'
+runServerWatcher = null
+getServerWatcher = ->
   FileWatcher = require './lib/util/file-watcher'
-  runServerWatcher = new FileWatcher
-    file: './lib'
-    command: 'cake'
-    args: ['run']
+  runServerWatcher = new FileWatcher file: './src' unless runServerWatcher
 
-  task 'run:watchful', ->
-    runServerWatcher.start()
+task 'run:watchful', =>
+  invoke 'build'
+  getServerWatcher()
+  runServerWatcher.start()
 
-  task 'watch', 'shortcut: run:watchful', -> invoke 'run:watchful'
-  task 'w', 'shortcut: watch', -> invoke 'watch'
+task 'watch', 'shortcut: run:watchful', => invoke 'run:watchful'
+task 'w', 'shortcut: watch', => invoke 'watch'
 
