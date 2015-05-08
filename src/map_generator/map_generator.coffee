@@ -4,9 +4,12 @@ class MapGenerator
     this
 
   get: (params) ->
-    "height": 30
-    "layers": [
-      "data": [
+    'x': params.x
+    'y': params.y
+    'z': 0
+    'height': 30
+    'layers': [
+      'data': [
         5,  21, 16, 22, 23, 30, 30, 12, 8,  22, 7,  8,  29, 25, 16, 23, 8,  7,  19, 5,  5,  19, 14, 22, 7,  20, 8,  32, 15, 5,
         3,  5,  31, 11, 25, 29, 28, 13, 29, 32, 23, 32, 30, 14, 5,  3,  32, 9,  25, 14, 10, 27, 24, 3,  3,  4,  9,  31, 11, 31,
         25, 24, 6,  3,  23, 16, 8,  14, 27, 29, 24, 5,  30, 11, 8,  19, 3,  21, 30, 13, 10, 20, 32, 32, 5,  5,  24, 20, 22, 6,
@@ -38,32 +41,32 @@ class MapGenerator
         3,  28, 12, 21, 9,  9,  31, 20, 11, 4,  22, 19, 27, 22, 12, 12, 4,  21, 29, 8,  9,  8,  14, 29, 23, 23, 4,  27, 27, 29,
         32, 19, 28, 29, 19, 21, 4,  25, 11, 3,  8,  30, 29, 11, 31, 11, 14, 24, 22, 22, 11, 8,  11, 5,  13, 31, 6,  8,  12, 24
       ]
-      "height": 30
-      "name": "Tile Layer 1"
-      "opacity": 1
-      "type": "tilelayer"
-      "visible": true
-      "width": 30
-      "x": params.x
-      "y": params.y
+      'height': 30
+      'name': 'Lv 1'
+      'opacity': 1
+      'type': 'tilelayer'
+      'visible': true
+      'width': 30
+      'x': params.x
+      'y': params.y
     ]
-    "orientation": "isometric"
-    "properties": {}
-    "tileheight": 32
-    "tilesets": [
-      "firstgid": 1
-      "image": "..\/Pictures\/grassland_tiles.png"
-      "imageheight": 1344
-      "imagewidth": 1024
-      "margin": 0
-      "name": "grassland_tiles"
-      "properties": {}
-      "spacing": 0
-      "tileheight": 32
-      "tilewidth": 64
+    'orientation': 'isometric'
+    'properties': {}
+    'tileheight': 32
+    'tilesets': [
+      'firstgid': 1
+      'image': '..\/Pictures\/grassland_tiles.png'
+      'imageheight': 1344
+      'imagewidth': 1024
+      'margin': 0
+      'name': 'grassland_tiles'
+      'properties': {}
+      'spacing': 0
+      'tileheight': 32
+      'tilewidth': 64
     ]
-    "tilewidth": 64
-    "version": 1
-    "width": 30
+    'tilewidth': 64
+    'version': 1
+    'width': 30
 
 module.exports = MapGenerator
