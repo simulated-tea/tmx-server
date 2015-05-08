@@ -23,7 +23,7 @@ class FileWatcher
 
   resetWatcher: ->
     unless @recentRestartLock
-      console.log "change: restarting"
+      console.log "change detected: restarting"
       platform.kill @spawnedRun if @spawnedRun?
       execSync @options.buildTool+' '+@options.buildArgument, 'stdio': 'inherit'
       @spawnedRun = spawn @options.buildTool, @options.runArgument, 'stdio': 'inherit'
@@ -36,7 +36,7 @@ class FileWatcher
       .on 'change', =>
         @resetWatcher()
       .on 'error', (err) =>
-        console.log 'error occured' + err
+        console.log 'error occured: ' + err
         @spawnedRun.kill 'SIGINT' if @spawnedRun?
 
 module.exports = FileWatcher

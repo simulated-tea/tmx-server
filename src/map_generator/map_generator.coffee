@@ -1,9 +1,9 @@
 
 class MapGenerator
-  constructor: (seed) ->
-    this.seed = seed
+  constructor: () ->
+    this
 
-  get: (x, y) ->
+  get: (params) ->
     "height": 30
     "layers": [
       "data": [
@@ -44,8 +44,8 @@ class MapGenerator
       "type": "tilelayer"
       "visible": true
       "width": 30
-      "x": 0
-      "y": 0
+      "x": params.x
+      "y": params.y
     ]
     "orientation": "isometric"
     "properties": {}
