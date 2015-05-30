@@ -10,10 +10,6 @@ class Prerenderer
     fs.createReadStream 'resources/grassland_tiles.png'
       .pipe new PNG filterType: 4
       .on 'parsed', ->
-        y = 31
-        x = 32
-        src_idx = @width*y + x << 2
-        dst_idx = 64*y + x << 2
         for y in [0..31]
           for x in [0..63]
             src_idx = @width*y + x << 2
