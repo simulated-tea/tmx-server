@@ -6,14 +6,20 @@ class Prerenderer
     this
 
   to: (response, params) ->
+    section = new PNG width: 64, height: 32
     fs.createReadStream 'resources/grassland_tiles.png'
       .pipe new PNG filterType: 4
       .on 'parsed', ->
-        for y in [1..@height]
-            for x in [1..@width]
-              idx = @width*y + x << 2
+        y = 31
+        x = 32
+        src_idx = @width*y + x << 2
+        dst_idx = 64*y + x << 2
+        for y in [0..31]
+          for x in [0..63]
+            src_idx = @width*y + x << 2
+            dst_idx = 64*y + x << 2
+            @data.copy section.data, dst_idx, src_idx, src_idx+4
 
-
-        @pack().pipe(response)
+        section.pack().pipe(response)
 
 module.exports = Prerenderer
