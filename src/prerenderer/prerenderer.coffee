@@ -11,10 +11,9 @@ class Prerenderer
       .pipe new PNG filterType: 4
       .on 'parsed', ->
         for y in [0..31]
-          for x in [0..63]
-            src_idx = @width*y + x << 2
-            dst_idx = 64*y + x << 2
-            @data.copy section.data, dst_idx, src_idx, src_idx+4
+          src_idx = @width*y << 2
+          dst_idx = section.width*y << 2
+          @data.copy section.data, dst_idx, src_idx, src_idx+(section.width << 2)
 
         section.pack().pipe(response)
 
