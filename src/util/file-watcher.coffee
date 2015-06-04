@@ -6,7 +6,7 @@ platform = require './platform-tools'
 class FileWatcher
   constructor: (options) ->
     defaults =
-      buildTool: platform.command('cake')
+      buildTool: platform.command 'cake'
       runArgument: ['run']
       buildArgument: ['build']
       recursive: true

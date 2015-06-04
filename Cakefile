@@ -11,16 +11,28 @@ coffeeBinary = if thisIsWindows then 'coffee.cmd' else 'coffee'
 task 'generate:src', ->
   spawn coffeeBinary, ['--compile', '--bare', '--output', 'lib/', 'src/'], 'stdio': 'inherit'
 
-task 'build', 'shortcut: generate:src', -> invoke 'generate:src'
+task 'generate:tests', ->
+  spawn coffeeBinary, ['--compile', '--bare', '--output', 'test/', 'tests-src/'], 'stdio': 'inherit'
+
+task 'build', 'shortcut: generate:src & tests', ->
+    invoke 'generate:src'
+    invoke 'generate:tests'
 task 'b', 'shortcut: build', -> invoke 'build'
 
 task 'clean', ->
   rimraf './lib', ->
+  rimraf './test', ->
 
 task 'c', 'shortcut: clean', -> invoke 'clean'
 
+task 'run:test', ->
+  platform = require './lib/util/platform-tools'
+  spawn platform.command('buster-test'), [], 'stdio': 'inherit'
+
+task 'test', 'shortcut: run:test', -> invoke 'run:test'
+task 't', 'shortcut: test', -> invoke 'test'
+
 task 'run:app', ->
-  invoke 'build'
   TMXServer = require './lib/TMXServer'
   TMXServer.start()
 

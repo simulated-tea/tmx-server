@@ -3,13 +3,12 @@
     "node": ">= 2.0.0"
   },
   "devDependencies": {
+    "buster": "^0.7.18",
     "coffee-script": "^1.9.1",
     "rimraf": "^2.3.3"
   },
   "dependencies": {
     "colors": "^1.0.3",
-    //"http": "0.0.0",
     "pngjs": "^0.4.0"
-    //"url": "^0.10.3"
   }
 }
