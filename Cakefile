@@ -1,5 +1,5 @@
 fs = require 'fs'
-path = require 'path'
+isThere = require 'is-there'
 colors = require 'colors'
 {spawn} = require 'child_process'
 rimraf = require 'rimraf'
@@ -25,28 +25,41 @@ task 'clean', ->
 
 task 'c', 'shortcut: clean', -> invoke 'clean'
 
+withCompiled = (file, callback) ->
+  if isThere file+'.js'
+    callback require file
+  else
+    console.log "Required library #{file} for task not found. Did you 'build' the project?"
+
 task 'run:test', ->
-  platform = require './lib/util/platform-tools'
-  spawn platform.command('buster-test'), [], 'stdio': 'inherit'
+  withCompiled './lib/util/platform-tools', (platform) ->
+    spawn platform.command('buster-test'), [], 'stdio': 'inherit'
 
 task 'test', 'shortcut: run:test', -> invoke 'run:test'
 task 't', 'shortcut: test', -> invoke 'test'
 
 task 'run:app', ->
-  TMXServer = require './lib/TMXServer'
-  TMXServer.start()
+  withCompiled './lib/TMXServer', (TMXServer) ->
+    TMXServer.start()
 
 task 'run', 'shortcut: run:app', -> invoke 'run:app'
 task 'r', 'shortcut: run', -> invoke 'run'
 
 runServerWatcher = null
-getServerWatcher = ->
-  FileWatcher = require './lib/util/file-watcher'
-  runServerWatcher = new FileWatcher file: './src' unless runServerWatcher
+getServerWatcher = (options) ->
+  util = require 'util'
+  withCompiled './lib/util/file-watcher', (FileWatcher) ->
+    runServerWatcher = new FileWatcher options unless runServerWatcher
+
+task 'test:watchful', =>
+  getServerWatcher { file: './tests-src', runArgument: ['test'] }
+  runServerWatcher.start()
+
+task 'keeptesting', 'shortcut: test:watchful', => invoke 'test:watchful'
+task 'k', 'shortcut: keeptesting', => invoke 'keeptesting'
 
 task 'run:watchful', =>
-  invoke 'build'
-  getServerWatcher()
+  getServerWatcher file: './src'
   runServerWatcher.start()
 
 task 'watch', 'shortcut: run:watchful', => invoke 'run:watchful'

@@ -8,7 +8,7 @@ exports.command = (name) ->
 
 exports.kill = (process) ->
   if thisIsWindows()
-    child_process = require 'child_process'
-    child_process.exec 'taskkill /PID '+process.pid+' /T /F'
+    {exec} = require 'child_process'
+    exec 'taskkill /PID '+process.pid+' /T /F'
   else
     process.kill

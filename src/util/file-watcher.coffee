@@ -5,12 +5,11 @@ platform = require './platform-tools'
 
 class FileWatcher
   constructor: (options) ->
-    defaults =
+    optionsWithDefaults =
       buildTool: platform.command 'cake'
       runArgument: ['run']
       buildArgument: ['build']
       recursive: true
-    optionsWithDefaults = defaults
     optionsWithDefaults[key] = value for key, value of options
 
     throw "File to watch is required" unless optionsWithDefaults.file?
@@ -22,21 +21,23 @@ class FileWatcher
     this
 
   resetWatcher: ->
-    unless @recentRestartLock
-      console.log "change detected: restarting"
-      platform.kill @spawnedRun if @spawnedRun?
-      execSync @options.buildTool+' '+@options.buildArgument, 'stdio': 'inherit'
-      @spawnedRun = spawn @options.buildTool, @options.runArgument, 'stdio': 'inherit'
+    platform.kill @spawnedRun if @spawnedRun?
+    execSync @options.buildTool+' '+@options.buildArgument, 'stdio': 'inherit'
+    @spawnedRun = spawn @options.buildTool, @options.runArgument, 'stdio': 'inherit'
+
+  throttledReset: ->
+    @resetWatcher() unless @recentRestartLock
     @recentRestartLock = true
     setTimeout (=> @recentRestartLock = false), 2000
 
   start: ->
+    console.log 'starting'
     @resetWatcher()
     fs.watch @options.file, recursive: @options.recursive
       .on 'change', =>
-        @resetWatcher()
+        @throttledReset()
       .on 'error', (err) =>
         console.log 'error occured: ' + err
-        @spawnedRun.kill 'SIGINT' if @spawnedRun?
+        platform.kill @spawnedRun if @spawnedRun?
 
 module.exports = FileWatcher
