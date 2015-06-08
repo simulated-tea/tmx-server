@@ -5,7 +5,7 @@ Prerenderer = require './prerenderer/prerenderer'
 c2_tools = require './construct2_tools/construct2_tools'
 
 mapGenerator = new MapGenerator
-prerenderer = new Prerenderer
+prerender = new Prerenderer
 
 exports.start = ->
   http.createServer (req, res) =>
@@ -22,7 +22,7 @@ exports.start = ->
       res.writeHead 200, 'Content-Type': 'image/png'
       params = (url.parse req.url, true).query
       console.log "Request for image at x: #{params.x}, y: #{params.y}"
-      prerenderer.to res, params
+      prerender.to res, params
 
   .listen 1337, '127.0.0.1'
   console.log 'Server started'
