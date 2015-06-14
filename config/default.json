@@ -1,0 +1,8 @@
+{
+  "prerenderer": {
+    "tiles": {
+      "widthInPixel": 64,
+      "heightInPixel": 32
+    }
+  }
+}

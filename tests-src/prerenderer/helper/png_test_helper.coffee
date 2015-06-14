@@ -1,4 +1,5 @@
 {assert} = require 'buster'
+config = require 'config'
 
 exports.fillPng = (png, color) ->
   for y in [0..png.height-1]

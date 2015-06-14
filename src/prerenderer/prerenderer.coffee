@@ -1,4 +1,5 @@
 fs = require 'fs'
+config = require 'config'
 {PNG} = require 'pngjs'
 
 class Prerenderer
