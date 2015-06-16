@@ -12,6 +12,7 @@
   "dependencies": {
     "colors": "^1.0.3",
     "config": "^1.14.0",
+    "functional.js": "^0.6.15",
     "pngjs": "^0.4.0"
   }
 }
