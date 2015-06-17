@@ -5,6 +5,7 @@
   "devDependencies": {
     "buster": "^0.7.18",
     "coffee-script": "^1.9.1",
+    "glob-expand": "^0.1.0",
     "is-there": "^2.0.0",
     "onecolor": "^2.5.0",
     "rimraf": "^2.3.3"

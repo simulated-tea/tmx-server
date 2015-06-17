@@ -1,18 +1,21 @@
 fs = require 'fs'
 util = require 'util'
+globExpand = require 'glob-expand'
 platform = require './platform-tools'
 {execSync, spawn} = require 'child_process'
 
 class FileWatcher
   constructor: (options) ->
     optionsWithDefaults =
+      files: []
       buildTool: platform.command 'cake'
       runArgument: ['run']
       buildArgument: ['build']
       recursive: true
     optionsWithDefaults[key] = value for key, value of options
+    optionsWithDefaults.files = [optionsWithDefaults.files..., options.file] if options.file
 
-    throw "File to watch is required" unless optionsWithDefaults.file?
+    throw "File(s) to watch is(are) required" unless optionsWithDefaults.files.length >= 1
     throw "Command is required" unless optionsWithDefaults.buildTool?
 
     @options = optionsWithDefaults
@@ -33,9 +36,14 @@ class FileWatcher
   start: ->
     console.log 'starting'
     @resetWatcher()
-    fs.watch @options.file, recursive: @options.recursive
+    for file in globExpand @options.files
+      @rewatchFileAndReset file
+
+  rewatchFileAndReset: (file) ->
+    fs.watch file, recursive: @options.recursive
       .on 'change', =>
         @throttledReset()
+        @rewatchFileAndReset file
       .on 'error', (err) =>
         console.log 'error occured: ' + err
         platform.kill @spawnedRun if @spawnedRun?

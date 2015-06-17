@@ -52,7 +52,7 @@ getServerWatcher = (options) ->
     runServerWatcher = new FileWatcher options unless runServerWatcher
 
 task 'test:watchful', =>
-  getServerWatcher { file: './src', runArgument: ['test'] }
+  getServerWatcher { files: ['./src/**/*.coffee', 'tests-src/**/*.coffee'], runArgument: ['test'] }
   runServerWatcher.start()
 
 task 'keeptesting', 'shortcut: test:watchful', => invoke 'test:watchful'
