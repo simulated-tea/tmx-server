@@ -25,4 +25,4 @@ exports.start = ->
       prerender.to res, params
 
   .listen 1337, '127.0.0.1'
-  console.log 'Server started'
+  console.log 'Server started. Try http://localhost:1337/image?x=0&y=0'
