@@ -175,3 +175,39 @@ describe 'pixel tools - use cases', ->
                       [10,15], [11,15], [12,15], [13,15],
       ].sort(reverseTupelSort)
 
+    it 'left inclusive size 4', ->
+      coordinates = pixel.leftBorderInclusive 4, 0, 8
+      assert.equals coordinates.sort(reverseTupelSort), [
+        [0, 8], [1, 8],
+        [0, 9], [1, 9], [2, 9], [3, 9],
+        [0,10], [1,10], [2,10], [3,10],
+        [0,11], [1,11],
+      ].sort(reverseTupelSort)
+
+    it 'left exclusive size 4', ->
+      coordinates = pixel.leftBorderExclusive 4, 0, 8
+      assert.equals coordinates, [
+
+        [0, 9], [1, 9],
+        [0,10], [1,10],
+
+      ].sort(reverseTupelSort)
+
+    it 'right inclusive size 4', ->
+      coordinates = pixel.rightBorderInclusive 4, 28, 4
+      assert.equals coordinates.sort(reverseTupelSort), [
+                        [30,4], [31,4],
+        [28,5], [29,5], [30,5], [31,5],
+        [28,6], [29,6], [30,6], [31,6],
+                        [30,7], [31,7],
+      ].sort(reverseTupelSort)
+
+    it 'right exclusive size 4', ->
+      coordinates = pixel.rightBorderExclusive 4, 28, 4
+      assert.equals coordinates, [
+
+                        [30,5], [31,5],
+                        [30,6], [31,6],
+
+      ].sort(reverseTupelSort)
+
