@@ -1,18 +1,20 @@
 {assert} = require 'buster'
 config = require 'config'
+js = require '../../../lib/util/language'
 pixel = require '../../../lib/prerenderer/pixel_tools'
 
 tileWidth = config.get 'prerenderer.tiles.widthInPixel'
 tileHeight = config.get 'prerenderer.tiles.heightInPixel'
 
 exports.fillPng = (png, color) ->
-  for y in [0..png.height-1]
-    for x in [0..png.width-1]
-      index = (png.width*y + x) << 2
-      png.data[index]   = 255*color.red()
-      png.data[index+1] = 255*color.green()
-      png.data[index+2] = 255*color.blue()
-      png.data[index+3] = 255
+  for [x,y] in js.carthesianProduct [0..png.width-1], [0..png.height-1]
+    index = (png.width*y + x) << 2
+    (new Buffer [
+      255*color.red(),
+      255*color.green(),
+      255*color.blue(),
+      255,
+    ]).copy png.data, index
 
 exports.assertInnerColor = (png, color, tileX, tileY) ->
   tileX ?= 0
@@ -20,15 +22,18 @@ exports.assertInnerColor = (png, color, tileX, tileY) ->
   tileOffsetX = tileWidth*tileX
   tileOffsetY = tileHeight*tileY
 
-  half_y = last_pixel_before_middle = tileHeight/2-1
-  half_x = last_pixel_before_center = tileWidth/2-1
   for [x,y] in pixel.innerRhombus tileHeight
     index = (tileWidth*y + x) << 2
-    _assertOn png, index, color, x, y
+    _assertColorOfPixelInPng png, index, color, x, y
 
-_assertOn = (png, index, color, x, y) ->
-  assert.equals png.data[index],   255*color.red(),   "red @(#{x},#{y})"
-  assert.equals png.data[index+1], 255*color.green(), "green @(#{x},#{y})"
-  assert.equals png.data[index+2], 255*color.blue(),  "blue @(#{x},#{y})"
-  assert.equals png.data[index+3], 255*color.alpha(), "alpha @(#{x},#{y})"
+
+_assertColorOfPixelInPng = (png, index, color, x, y) ->
+  actual = png.data.slice index, index+4
+  expect = new Buffer [
+    255*color.red(),
+    255*color.green(),
+    255*color.blue(),
+    255,
+  ]
+  assert actual.equals(expect), "pixel at [#{x},#{y}] should have been data #{expect.toString 'hex'} but was #{actual.toString 'hex'}"
 
