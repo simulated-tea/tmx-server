@@ -1,10 +1,11 @@
 buster = require 'buster'
 buster.spec.expose()
 {assert} = buster
+reverseTupelSort = (a,b) -> Math.sign a[1] - b[1] || a[0] - b[0]
 
 pixel = require '../../lib/prerenderer/pixel_tools'
 
-describe 'pixel tools', ->
+describe 'pixel tools - primitives', ->
   describe 'every helper', ->
     it 'returns [] for size 0', ->
       for func in [
@@ -101,3 +102,46 @@ describe 'pixel tools', ->
                       [2,0], [3,0],
 
       ]
+
+describe 'pixel tools - use cases', ->
+  describe 'innerRhombus', ->
+    it 'produces the correct coordinates for size 2', ->
+      coordinates = pixel.innerRhombus 2
+      assert.equals coordinates, []
+
+    it 'produces the correct coordinates for size 4', ->
+      coordinates = pixel.innerRhombus 4
+      assert.equals coordinates, [
+
+                      [2,1], [3,1], [4,1], [5,1],
+                      [2,2], [3,2], [4,2], [5,2],
+
+      ]
+
+    it 'produces the correct coordinates for size 4 with offsets', ->
+      coordinates = pixel.innerRhombus 4, 16, 4
+      assert.equals coordinates, [
+
+                      [18,5], [19,5], [20,5], [21,5],
+                      [18,6], [19,6], [20,6], [21,6],
+
+      ]
+
+  describe 'outerRhombus', ->
+    it 'produces the correct coordinates for size 4', ->
+      coordinates = pixel.outerRhombus 4
+      assert.equals coordinates.sort(reverseTupelSort), [
+                      [2,0], [3,0], [4,0], [5,0],
+        [0,1], [1,1], [2,1], [3,1], [4,1], [5,1], [6,1], [7,1],
+        [0,2], [1,2], [2,2], [3,2], [4,2], [5,2], [6,2], [7,2],
+                      [2,3], [3,3], [4,3], [5,3],
+      ].sort(reverseTupelSort)
+
+    it 'produces the correct coordinates for size 4 with offsets', ->
+      coordinates = pixel.outerRhombus 4, 16, 4
+      assert.equals coordinates.sort(reverseTupelSort), [
+                        [18,4], [19,4], [20,4], [21,4],
+        [16,5], [17,5], [18,5], [19,5], [20,5], [21,5], [22,5], [23,5],
+        [16,6], [17,6], [18,6], [19,6], [20,6], [21,6], [22,6], [23,6],
+                        [18,7], [19,7], [20,7], [21,7],
+      ].sort(reverseTupelSort)
