@@ -1,5 +1,6 @@
 fs = require 'fs'
 config = require 'config'
+pixel = require './pixel_tools'
 {PNG} = require 'pngjs'
 
 class Prerenderer
@@ -15,18 +16,9 @@ class Prerenderer
         section.pack().pipe(response)
 
   copyTile: (source, src_x, src_y, target, trg_x, trg_y) ->
-    for y in [0..15]
-      diagonal_offset = Math.max 0, 2*(15 - y)
-      src_idx = @width*y + diagonal_offset << 2
-      dst_idx = target.width*y + diagonal_offset << 2
-      bytes_to_copy = target.width - 2*diagonal_offset << 2
-      source.data.copy target.data, dst_idx, src_idx, src_idx+bytes_to_copy
-
-    for y in [16..31]
-      diagonal_offset = Math.max 0, 2*(y - 16)
-      src_idx = @width*y + diagonal_offset << 2
-      dst_idx = target.width*y + diagonal_offset << 2
-      bytes_to_copy = target.width - 2*diagonal_offset << 2
-      source.data.copy target.data, dst_idx, src_idx, src_idx+bytes_to_copy
+    for [x,y] in pixel.innerRhombus config.get 'prerenderer.tiles.heightInPixel', 0, 0
+      src_idx = @width*y + x << 2
+      dst_idx = target.width*y + x << 2
+      source.data.copy target.data, dst_idx, src_idx, src_idx+4
 
 module.exports = Prerenderer

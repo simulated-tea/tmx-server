@@ -1,5 +1,6 @@
 {assert} = require 'buster'
 config = require 'config'
+pixel = require '../../../lib/prerenderer/pixel_tools'
 
 tileWidth = config.get 'prerenderer.tiles.widthInPixel'
 tileHeight = config.get 'prerenderer.tiles.heightInPixel'
@@ -21,17 +22,9 @@ exports.assertInnerColor = (png, color, tileX, tileY) ->
 
   half_y = last_pixel_before_middle = tileHeight/2-1
   half_x = last_pixel_before_center = tileWidth/2-1
-  for y in [tileOffsetY+0..tileOffsetY+half_y]
-    rhombusOffset = Math.max 0, half_x-2*y
-    for x in [tileOffsetX+rhombusOffset..tileOffsetX+tileWidth-rhombusOffset]
-      index = (tileWidth*y + x) << 2
-      _assertOn png, index, color, x, y
-
-  for y in [tileOffsetY+half_y..tileOffsetY+0]
-    rhombusOffset = Math.max 0, half_x-2*y
-    for x in [tileOffsetX+rhombusOffset..tileOffsetX+tileWidth-rhombusOffset]
-      index = (tileWidth*y + x) << 2
-      _assertOn png, index, color, x, y
+  for [x,y] in pixel.innerRhombus tileHeight
+    index = (tileWidth*y + x) << 2
+    _assertOn png, index, color, x, y
 
 _assertOn = (png, index, color, x, y) ->
   assert.equals png.data[index],   255*color.red(),   "red @(#{x},#{y})"
