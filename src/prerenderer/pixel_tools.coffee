@@ -91,6 +91,19 @@ exports.lowerDownwardTriangleExclusive = (height) -> _getLowerTriangleDownwardEx
 exports.upperDownwardTriangleInclusive = (height) -> _getUpperTriangleDownwardInclusive height-1, 0, 0
 exports.upperDownwardTriangleExclusive = (height) -> _getUpperTriangleDownwardExclusive height-1, 0, 0
 
+exports.outerRhombus = (height, x_off, y_off) ->
+  x_off ?= 0
+  y_off ?= 0
+  half = height/2
+  throw "Only even sizes are suppored" unless half == height//2
+
+  [
+    (_getLowerTriangleUpwardInclusive   half-1,        x_off,      y_off)...,
+    (_getLowerTriangleDownwardInclusive half-1, 2*half+x_off,      y_off)...,
+    (_getUpperTriangleDownwardInclusive half-1,        x_off, half+y_off)...,
+    (_getUpperTriangleUpwardInclusive   half-1, 2*half+x_off, half+y_off)...,
+  ]
+
 exports.innerRhombus = (height, x_off, y_off) ->
   x_off ?= 0
   y_off ?= 0
@@ -104,15 +117,47 @@ exports.innerRhombus = (height, x_off, y_off) ->
     (_getUpperTriangleUpwardExclusive   half-1, 2*half+x_off, half+y_off)...,
   ]
 
-exports.outerRhombus = (height, x_off, y_off) ->
+exports.upperBorderInclusive = (height, x_off, y_off) ->
   x_off ?= 0
   y_off ?= 0
   half = height/2
   throw "Only even sizes are suppored" unless half == height//2
 
   [
-    (_getLowerTriangleUpwardInclusive   half-1,        x_off,      y_off)...,
-    (_getLowerTriangleDownwardInclusive half-1, 2*half+x_off,      y_off)...,
-    (_getUpperTriangleDownwardInclusive half-1,        x_off, half+y_off)...,
-    (_getUpperTriangleUpwardInclusive   half-1, 2*half+x_off, half+y_off)...,
+    (_getUpperTriangleDownwardInclusive half-1,        x_off, y_off)...,
+    (_getUpperTriangleUpwardInclusive   half-1, 2*half+x_off, y_off)...,
   ]
+
+exports.upperBorderExclusive = (height, x_off, y_off) ->
+  x_off ?= 0
+  y_off ?= 0
+  half = height/2
+  throw "Only even sizes are suppored" unless half == height//2
+
+  [
+    (_getUpperTriangleDownwardExclusive half-1,        x_off, y_off)...,
+    (_getUpperTriangleUpwardExclusive   half-1, 2*half+x_off, y_off)...,
+  ]
+
+exports.lowerBorderInclusive = (height, x_off, y_off) ->
+  x_off ?= 0
+  y_off ?= 0
+  half = height/2
+  throw "Only even sizes are suppored" unless half == height//2
+
+  [
+    (_getLowerTriangleUpwardInclusive   half-1,        x_off, y_off)...,
+    (_getLowerTriangleDownwardInclusive half-1, 2*half+x_off, y_off)...,
+  ]
+
+exports.lowerBorderExclusive = (height, x_off, y_off) ->
+  x_off ?= 0
+  y_off ?= 0
+  half = height/2
+  throw "Only even sizes are suppored" unless half == height//2
+
+  [
+    (_getLowerTriangleUpwardExclusive   half-1,        x_off, y_off)...,
+    (_getLowerTriangleDownwardExclusive half-1, 2*half+x_off, y_off)...,
+  ]
+

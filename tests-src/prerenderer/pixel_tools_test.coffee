@@ -109,24 +109,6 @@ describe 'pixel tools - use cases', ->
       coordinates = pixel.innerRhombus 2
       assert.equals coordinates, []
 
-    it 'produces the correct coordinates for size 4', ->
-      coordinates = pixel.innerRhombus 4
-      assert.equals coordinates, [
-
-                      [2,1], [3,1], [4,1], [5,1],
-                      [2,2], [3,2], [4,2], [5,2],
-
-      ]
-
-    it 'produces the correct coordinates for size 4 with offsets', ->
-      coordinates = pixel.innerRhombus 4, 16, 4
-      assert.equals coordinates, [
-
-                      [18,5], [19,5], [20,5], [21,5],
-                      [18,6], [19,6], [20,6], [21,6],
-
-      ]
-
   describe 'outerRhombus', ->
     it 'produces the correct coordinates for size 4', ->
       coordinates = pixel.outerRhombus 4
@@ -145,3 +127,51 @@ describe 'pixel tools - use cases', ->
         [16,6], [17,6], [18,6], [19,6], [20,6], [21,6], [22,6], [23,6],
                         [18,7], [19,7], [20,7], [21,7],
       ].sort(reverseTupelSort)
+
+    it 'produces the correct coordinates for size 4', ->
+      coordinates = pixel.innerRhombus 4
+      assert.equals coordinates, [
+
+                      [2,1], [3,1], [4,1], [5,1],
+                      [2,2], [3,2], [4,2], [5,2],
+
+      ]
+
+    it 'produces the correct coordinates for size 4 with offsets', ->
+      coordinates = pixel.innerRhombus 4, 16, 4
+      assert.equals coordinates, [
+
+                      [18,5], [19,5], [20,5], [21,5],
+                      [18,6], [19,6], [20,6], [21,6],
+
+      ]
+
+  describe 'borders', ->
+    it 'upper inclusive size 4', ->
+      coordinates = pixel.upperBorderInclusive 4, 8, 0
+      assert.equals coordinates.sort(reverseTupelSort), [
+        [8,0], [9,0], [10,0], [11,0], [12,0], [13,0], [14,0], [15,0],
+                      [10,1], [11,1], [12,1], [13,1],
+      ].sort(reverseTupelSort)
+
+    it 'upper exclusive size 4', ->
+      coordinates = pixel.upperBorderExclusive 4, 8, 0
+      assert.equals coordinates.sort(reverseTupelSort), [
+                      [10,0], [11,0], [12,0], [13,0],
+
+      ].sort(reverseTupelSort)
+
+    it 'lower inclusive size 4', ->
+      coordinates = pixel.lowerBorderInclusive 4, 8, 14
+      assert.equals coordinates.sort(reverseTupelSort), [
+                        [10,14], [11,14], [12,14], [13,14],
+        [8,15], [9,15], [10,15], [11,15], [12,15], [13,15], [14,15], [15,15],
+      ].sort(reverseTupelSort)
+
+    it 'lower exclusive size 4', ->
+      coordinates = pixel.lowerBorderExclusive 4, 8, 14
+      assert.equals coordinates.sort(reverseTupelSort), [
+
+                      [10,15], [11,15], [12,15], [13,15],
+      ].sort(reverseTupelSort)
+
