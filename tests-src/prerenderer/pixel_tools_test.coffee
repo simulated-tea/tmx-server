@@ -104,11 +104,6 @@ describe 'pixel tools - primitives', ->
       ]
 
 describe 'pixel tools - use cases', ->
-  describe 'innerRhombus', ->
-    it 'produces the correct coordinates for size 2', ->
-      coordinates = pixel.innerRhombus 2
-      assert.equals coordinates, []
-
   describe 'outerRhombus', ->
     it 'produces the correct coordinates for size 4', ->
       coordinates = pixel.outerRhombus 4
@@ -127,6 +122,11 @@ describe 'pixel tools - use cases', ->
         [16,6], [17,6], [18,6], [19,6], [20,6], [21,6], [22,6], [23,6],
                         [18,7], [19,7], [20,7], [21,7],
       ].sort(reverseTupelSort)
+
+  describe 'innerRhombus', ->
+    it 'produces the correct coordinates for size 2', ->
+      coordinates = pixel.innerRhombus 2
+      assert.equals coordinates, []
 
     it 'produces the correct coordinates for size 4', ->
       coordinates = pixel.innerRhombus 4

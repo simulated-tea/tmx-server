@@ -31,7 +31,7 @@ class FileWatcher
   throttledReset: ->
     @resetWatcher() unless @recentRestartLock
     @recentRestartLock = true
-    setTimeout (=> @recentRestartLock = false), 500
+    setTimeout (=> @recentRestartLock = false), 1000
 
   start: ->
     console.log 'starting'

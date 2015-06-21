@@ -1,3 +1,9 @@
+Number::times = (fn) ->
+  do fn for [1..@valueOf()] if @valueOf()
+
+Array::repeat = (n, list) ->
+  [].concat (n.times -> list)...
+
 exports.carthesianProduct = ->
   args = [].slice.call arguments
   end = args.length - 1
