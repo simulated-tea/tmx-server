@@ -16,7 +16,8 @@ describe 'pixel tools - primitives', ->
         'lowerDownwardTriangleInclusive',
         'lowerDownwardTriangleExclusive',
         'upperDownwardTriangleInclusive',
-        'upperDownwardTriangleExclusive'
+        'upperDownwardTriangleExclusive',
+        'rectangle',
       ]
         coordinates = pixel[func] 0
         assert.equals coordinates, []
@@ -211,3 +212,21 @@ describe 'pixel tools - use cases', ->
 
       ].sort(reverseTupelSort)
 
+
+  describe 'rectangle', ->
+    it 'square size 2, no offset', ->
+      coordinates = pixel.rectangle 0, 0, 2, 2
+      assert.equals coordinates.sort(reverseTupelSort), [
+        [0,0], [1,0],
+        [0,1], [1,1],
+      ]
+
+    it 'proper rectangle', ->
+      coordinates = pixel.rectangle 4, 7, 3, 5
+      assert.equals coordinates.sort(reverseTupelSort), [
+        [4, 7], [5, 7], [6, 7],
+        [4, 8], [5, 8], [6, 8],
+        [4, 9], [5, 9], [6, 9],
+        [4,10], [5,10], [6,10],
+        [4,11], [5,11], [6,11],
+      ]

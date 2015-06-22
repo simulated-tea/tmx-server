@@ -1,3 +1,5 @@
+js = require '../util/language'
+
 _getLowerTriangleUpwardInclusive = (h, x_off, y_off) ->
   w = 2*h + 1
   getForRow = (ac, n) ->
@@ -205,3 +207,10 @@ exports.rightBorderExclusive = (height, x_off, y_off) ->
     (_getUpperTriangleDownwardExclusive half-1, x_off, half+y_off)...,
   ]
 
+_rectangle = (x, y, width, height) ->
+  x ?= 0; y ?= 0; width ?= 0; height ?= 0
+  return [] if width == 0 or height == 0
+  js.carthesianProduct [x..x+width-1], [y..y+height-1]
+
+exports.rectangle = _rectangle
+exports.tile = (x, y, height) -> _rectangle x, y, 2*height, height
