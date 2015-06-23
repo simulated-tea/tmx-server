@@ -20,13 +20,13 @@ exports.addTile = (source, src_x, src_y, target, trg_x, trg_y) ->
 _upperRightCornerPixelOfEnclosingRectangleInTilemap = (x, y) ->
   [
     tileWidth*(x-1)
-    tileHeight*(y-1),
+    tileHeight*(y-1)
   ]
 
 _upperRightCornerPixelOfEnclosingRectangleInIsoGrid = (x, y) ->
   [
-    tileWidth*(x-1) + (if y % 2 == 0 then -32 else 0), # here with - ?????
-    tileHeight*(y-1)/2,
+    tileWidth*(x-1) + (if y % 2 == 0 then -32 else 0) # here with - ?????
+    tileHeight*(y-1)/2
   ]
 
 _copyPixelInPngs = (source, x, y, target, u, v) ->

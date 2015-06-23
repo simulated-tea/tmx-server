@@ -4,5 +4,11 @@
       "widthInPixel": 64,
       "heightInPixel": 32
     }
+  },
+  "resources": {
+    "grassland": {
+      "widthInTiles": 16,
+      "heightInTiles": 38
+    }
   }
 }

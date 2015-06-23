@@ -22,7 +22,8 @@ exports.start = ->
       res.writeHead 200, 'Content-Type': 'image/png'
       params = (url.parse req.url, true).query
       console.log "Request for image at x: #{params.x}, y: #{params.y}"
-      prerender.to res, params
+      mapDescription = mapGenerator.get params
+      prerender.to res, mapDescription
 
   .listen 1337, '127.0.0.1'
   console.log 'Server started. Try http://localhost:1337/image?x=0&y=0'
