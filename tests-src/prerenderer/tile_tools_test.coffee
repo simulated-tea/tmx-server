@@ -38,13 +38,13 @@ tile = require '../../lib/prerenderer/tile_tools'
 #   -----------------------------
 
 describe 'tileTools', ->
-  it 'copy a single tile', ->
+  it 'copy a single rhombus tile', ->
     source = new PNG width: 64, height: 32
     target = new PNG width: 64, height: 32
     pngHelper.fillPng source, color '#CCC'
     pngHelper.fillPng target, color '#000'
 
-    tile.copy source, 1, 1, target, 1, 1
+    tile.copyOuterRhombus source, 1, 1, target, 1, 1
 
     pngHelper.assertInnerColorOnIsoGrid target, color '#CCC', 1, 1
 
@@ -56,8 +56,8 @@ describe 'tileTools', ->
     pngHelper.fillRectangle source, (color '#CCC'), 0,  32, 64, 32
     pngHelper.fillRectangle source, (color '#DDD'), 64, 32, 64, 32
 
-    tile.copy source, 1, 1, target, 1, 3
-    tile.copy source, 2, 1, target, 1, 2
+    tile.copyOuterRhombus source, 1, 1, target, 1, 3
+    tile.copyOuterRhombus source, 2, 1, target, 1, 2
 
     pngHelper.assertInnerColorOnIsoGrid target, (color '#AAA'), 1, 3
     pngHelper.assertInnerColorOnIsoGrid target, (color '#BBB'), 1, 2

@@ -1,15 +1,27 @@
 config = require 'config'
 pixel = require './pixel_tools'
+js = require '../util/language'
 
 tileWidth = config.get 'prerenderer.tiles.widthInPixel'
 tileHeight = config.get 'prerenderer.tiles.heightInPixel'
 
-exports.copy = (source, src_x, src_y, target, trg_x, trg_y) ->
-  x_off_src = tileWidth*(src_x-1)
-  y_off_src = tileHeight*(src_y-1)
+exports.copyOuterRhombus = (source, src_x, src_y, target, trg_x, trg_y) ->
+  [x_off_src, y_off_src] = _upperRightCornerPixelOfEnclosingRectangleInTilemap src_x, src_y
   [x_off_trg, y_off_trg] = _upperRightCornerPixelOfEnclosingRectangleInIsoGrid trg_x, trg_y
   for [x,y] in pixel.outerRhombus tileHeight, x_off_src, y_off_src
     _copyPixelInPngs source, x, y, target, x_off_trg+x, y_off_trg+y
+
+exports.addTile = (source, src_x, src_y, target, trg_x, trg_y) ->
+  [x_off_src, y_off_src] = _upperRightCornerPixelOfEnclosingRectangleInTilemap src_x, src_y
+  [x_off_trg, y_off_trg] = _upperRightCornerPixelOfEnclosingRectangleInIsoGrid trg_x, trg_y
+  for [x,y] in js.carthesianProduct [0..tileWidth-1], [0..tileHeight-1]
+    _addPixelInPngs source, x_off_src+x, y_off_src+y, target, x_off_trg+x, y_off_trg+y
+
+_upperRightCornerPixelOfEnclosingRectangleInTilemap = (x, y) ->
+  [
+    tileWidth*(x-1)
+    tileHeight*(y-1),
+  ]
 
 _upperRightCornerPixelOfEnclosingRectangleInIsoGrid = (x, y) ->
   [
