@@ -12,7 +12,7 @@ class Prerenderer
     fs.createReadStream 'resources/grassland_tiles.png'
       .pipe new PNG filterType: 4
       .on 'parsed', ->
-        tile.copy @, 1, 1, section, 1, 1
+        tile.addTile @, 1, 1, section, 1, 1
         section.pack().pipe(response)
 
 module.exports = Prerenderer
