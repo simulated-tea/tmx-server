@@ -61,3 +61,19 @@ describe 'tileTools', ->
 
     pngHelper.assertInnerColorOnIsoGrid target, (color '#AAA'), 1, 3
     pngHelper.assertInnerColorOnIsoGrid target, (color '#BBB'), 1, 2
+
+describe 'compositing', ->
+  it 'adds two pixel respecting alpha values', ->
+    black_opaque      = new Buffer '000000ff', 'hex'
+    black_translucent = new Buffer '0000007f', 'hex'
+    black_transparent = new Buffer '00000000', 'hex'
+    white_opaque      = new Buffer 'ffffffff', 'hex'
+    white_translucent = new Buffer 'ffffff7f', 'hex'
+
+    assert.equals tile._addPixelOver(white_translucent, black_transparent), new Buffer 'ffffff7f', 'hex'
+    assert.equals tile._addPixelOver(white_translucent, black_translucent), new Buffer 'a9a9a9be', 'hex'
+    assert.equals tile._addPixelOver(white_translucent, black_opaque),      new Buffer '7f7f7fff', 'hex'
+    assert.equals tile._addPixelOver(black_opaque, white_translucent),      black_opaque
+    assert.equals tile._addPixelOver(black_opaque, white_opaque),           black_opaque
+    assert.equals tile._addPixelOver(black_transparent, white_translucent), white_translucent
+    assert.equals tile._addPixelOver(black_transparent, white_opaque),      white_opaque

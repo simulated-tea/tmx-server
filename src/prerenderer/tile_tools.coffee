@@ -21,3 +21,32 @@ _copyPixelInPngs = (source, x, y, target, u, v) ->
   src_idx = source.width*y + x << 2
   dst_idx = target.width*v + u << 2
   source.data.copy target.data, dst_idx, src_idx, src_idx+4
+
+_addPixelInPngs = (source, x, y, target, u, v) ->
+  src_idx = source.width*y + x << 2
+  dst_idx = target.width*v + u << 2
+  addPixel = source.data.slice src_idx, src_idx+4
+  originalPixel = target.data.slice dst_idx, dst_idx+4
+  newPixel = _addPixelOver addPixel, originalPixel
+  newPixel.copy target.data, dst_idx
+
+_addPixelOver = (pixel_a, pixel_b) ->
+  red_a = pixel_a.readUInt8 0
+  green_a = pixel_a.readUInt8 1
+  blue_a = pixel_a.readUInt8 2
+  alpha_a = pixel_a.readUInt8 3
+
+  red_b = pixel_b.readUInt8 0
+  green_b = pixel_b.readUInt8 1
+  blue_b = pixel_b.readUInt8 2
+  alpha_b = pixel_b.readUInt8 3
+
+  alpha_o = alpha_a + alpha_b*(255-alpha_a)/255
+  new Buffer [
+    (red_a*alpha_a + red_b*alpha_b*(255-alpha_a)/255)/alpha_o,
+    (green_a*alpha_a + green_b*alpha_b*(255-alpha_a)/255)/alpha_o,
+    (blue_a*alpha_a + blue_b*alpha_b*(255-alpha_a)/255)/alpha_o,
+    alpha_o,
+  ]
+
+exports._addPixelOver = _addPixelOver
