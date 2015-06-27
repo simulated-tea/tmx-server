@@ -5,7 +5,7 @@ Array::repeat = (n, list) ->
   [].concat (n.times -> list)...
 
 exports.carthesianProduct = ->
-  args = [].slice.call arguments
+  args = [].reverse.call [].slice.call arguments
   end = args.length - 1
   result = []
 
@@ -14,7 +14,7 @@ exports.carthesianProduct = ->
     last = (start == end)
     for i in [0..first.length-1]
       copy = curr.slice()
-      copy.push first[i]
+      copy.unshift first[i]
 
       if last
         result.push copy
