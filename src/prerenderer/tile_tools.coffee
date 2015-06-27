@@ -10,6 +10,7 @@ exports.addTile = (source, src_x, src_y, target, trg_x, trg_y) ->
   for y in [0..tileHeight-1] # performance critical pixel loop
     for x in [0..tileWidth-1]
       _addPixelInPngs source, x_off_src+x, y_off_src+y, target, x_off_trg+x, y_off_trg+y
+  null
 
 _upperRightCornerPixelOfEnclosingRectangleInTilemap = (x, y) ->
   [
