@@ -25,24 +25,17 @@ class Prerenderer
     mapWidthInTiles = mapDescription.width
     mapHeightInTiles = mapDescription.height
     mapDetails = mapDescription.layers[0]
-    map = new PNG width: mapWidthInTiles*tileWidth, height: (mapHeightInTiles+1)*tileHeight/2
+    map = new PNG width: mapWidthInTiles*tileWidth + tileWidth/2, height: (mapHeightInTiles+1)*tileHeight/2
     for [x, y] in js.carthesianProduct [1..mapWidthInTiles], [1..mapHeightInTiles]
-      descriptionIndex = mapWidthInTiles*y + x
+      descriptionIndex = mapWidthInTiles*(y-1) + (x-1)
       tilemapIndex = mapDetails.data[descriptionIndex]
       tile.addTile tilemap, @getTileCoordinatesOnTilemap(tilemapIndex)..., map, x, y
-    console.log 'done. delivering map'
     map
 
   getTileCoordinatesOnTilemap: (index) ->
     [
-      index %% tMapWidth + 1
-      index // tMapWidth + 1
-    ]
-
-  getTileCoordinatesOnIsoMap: (index, mapWidth) ->
-    [
-      index %% mapWidth + 1
-      index // mapWidth + 1
+      (index - 1) %% tMapWidth + 1
+      (index - 1) // tMapWidth + 1
     ]
 
 module.exports = Prerenderer
