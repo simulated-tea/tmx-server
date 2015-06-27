@@ -37,6 +37,35 @@ tile = require '../../lib/prerenderer/tile_tools'
 #   |0,4 ` . ,´  1,4  ` . ,´ 2,4|
 #   -----------------------------
 
+describe 'tileTools', ->
+  it 'copy a single tile', ->
+    source = new PNG width: 64, height: 32
+    target = new PNG width: 64, height: 32
+    pngHelper.fillPng source, color '#CCC'
+    pngHelper.fillPng target, color '#000'
+
+    tile.addTile source, 1, 1, target, 1, 1
+
+    pngHelper.assertColorOnRectangle target, color '#CCC', 1, 1
+
+  it 'copy from arbitrary position to another arbitrary position I', ->
+    source = new PNG width: 128, height: 64
+    target = new PNG width: 128, height: 64
+    pngHelper.fillRectangle source, (color '#AAA'), 0,  0,  64, 32
+
+    tile.addTile source, 1, 1, target, 1, 3
+
+    pngHelper.assertColorOnRectangle target, (color '#AAA'), 1, 3
+
+  it 'copy from arbitrary position to another arbitrary position II', ->
+    source = new PNG width: 128, height: 64
+    target = new PNG width: 128, height: 64
+    pngHelper.fillRectangle source, (color '#AAA'), 64, 0,  64, 32
+
+    tile.addTile source, 2, 1, target, 1, 2
+
+    pngHelper.assertColorOnRectangle target, (color '#AAA'), 1, 2
+
 describe 'compositing', ->
   it 'adds two pixel respecting alpha values', ->
     black_opaque      = new Buffer '000000ff', 'hex'

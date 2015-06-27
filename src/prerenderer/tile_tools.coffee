@@ -18,7 +18,7 @@ _upperRightCornerPixelOfEnclosingRectangleInTilemap = (x, y) ->
 
 _upperRightCornerPixelOfEnclosingRectangleInIsoGrid = (x, y) ->
   [
-    tileWidth*(x-1) + (if y % 2 == 0 then -32 else 0) # here with - ?????
+    tileWidth*(x-1) + (if y % 2 == 0 then 32 else 0)
     tileHeight*(y-1)/2
   ]
 
