@@ -1,5 +1,10 @@
 http = require 'http'
 url = require 'url'
+config = require 'config'
+
+ip = config.get 'server.ip'
+port = config.get 'server.port'
+
 MapGenerator = require './map_generator/map_generator'
 Prerenderer = require './prerenderer/prerenderer'
 c2_tools = require './construct2_tools/construct2_tools'
@@ -25,5 +30,5 @@ exports.start = ->
       mapDescription = mapGenerator.get params
       prerender.to res, mapDescription
 
-  .listen 1337, '127.0.0.1'
-  console.log 'Server started. Try http://localhost:1337/image?x=0&y=0'
+  .listen port, ip
+  console.log "Server started. Try http://#{ip}:#{port}/image?x=0&y=0"
