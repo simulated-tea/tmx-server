@@ -5,10 +5,13 @@ tileWidth = config.get 'prerenderer.tiles.widthInPixel'
 tileHeight = config.get 'prerenderer.tiles.heightInPixel'
 
 exports.addTile = (source, src_x, src_y, target, trg_x, trg_y) ->
+  addRectangle(source, src_x, src_y, target, trg_x, trg_y, tileWidth, tileHeight)
+
+exports.addRectangle = addRectangle = (source, src_x, src_y, target, trg_x, trg_y, width, height) ->
   [x_off_src, y_off_src] = _upperRightCornerPixelOfEnclosingRectangleInTilemap src_x, src_y
   [x_off_trg, y_off_trg] = _upperRightCornerPixelOfEnclosingRectangleInIsoGrid trg_x, trg_y
-  for y in [0..tileHeight-1] # performance critical pixel loop
-    for x in [0..tileWidth-1]
+  for y in [0..width-1] # performance critical pixel loop
+    for x in [0..height-1]
       _addPixelInPngs source, x_off_src+x, y_off_src+y, target, x_off_trg+x, y_off_trg+y
   null
 
@@ -24,7 +27,7 @@ _upperRightCornerPixelOfEnclosingRectangleInIsoGrid = (x, y) ->
     tileHeight*(y-1)/2
   ]
 
-_addPixelInPngs = (source, x, y, target, u, v) ->
+exports._addPixelInPngs = _addPixelInPngs = (source, x, y, target, u, v) ->
   src_idx = source.width*y + x << 2
   dst_idx = target.width*v + u << 2
   pixel_a = source.data

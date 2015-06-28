@@ -67,17 +67,26 @@ describe 'tileTools', ->
     pngHelper.assertColorOnRectangle target, (color '#AAA'), 1, 2
 
 describe 'compositing', ->
-  it 'adds two pixel respecting alpha values', ->
-    black_opaque      = new Buffer '000000ff', 'hex'
-    black_translucent = new Buffer '0000007f', 'hex'
-    black_transparent = new Buffer '00000000', 'hex'
-    white_opaque      = new Buffer 'ffffffff', 'hex'
-    white_translucent = new Buffer 'ffffff7f', 'hex'
+  black_opaque      = new Buffer '000000ff', 'hex'
+  black_translucent = new Buffer '0000007f', 'hex'
+  black_transparent = new Buffer '00000000', 'hex'
+  white_opaque      = new Buffer 'ffffffff', 'hex'
+  white_translucent = new Buffer 'ffffff7f', 'hex'
 
-    assert.equals tile._addPixelOver(white_translucent, black_transparent), new Buffer 'ffffff7f', 'hex'
-    assert.equals tile._addPixelOver(white_translucent, black_translucent), new Buffer 'a9a9a9be', 'hex'
-    assert.equals tile._addPixelOver(white_translucent, black_opaque),      new Buffer '7f7f7fff', 'hex'
-    assert.equals tile._addPixelOver(black_opaque, white_translucent),      black_opaque
-    assert.equals tile._addPixelOver(black_opaque, white_opaque),           black_opaque
-    assert.equals tile._addPixelOver(black_transparent, white_translucent), white_translucent
-    assert.equals tile._addPixelOver(black_transparent, white_opaque),      white_opaque
+  for [existing_color,  added_color,       expected_color] in [
+    [black_transparent, white_translucent, new Buffer('ffffff7f', 'hex')]
+    [black_translucent, white_translucent, new Buffer('a9a9a9be', 'hex')]
+    [black_opaque,      white_translucent, new Buffer('7f7f7fff', 'hex')]
+    [white_translucent, black_opaque,      black_opaque]
+    [white_opaque,      black_opaque,      black_opaque]
+    [white_translucent, black_transparent, white_translucent]
+    [white_opaque,      black_transparent, white_opaque]
+  ]
+    do (existing_color, added_color, expected_color) ->
+      it "combines #{existing_color.toString('hex')} and #{added_color.toString('hex')} correctly ", ->
+        existing = { width: 0, data: existing_color.slice() }
+        added =    { width: 0, data: added_color }
+
+        tile._addPixelInPngs added, 0, 0, existing, 0, 0
+
+        assert.equals existing.data, expected_color, "#{existing.data.toString('hex')} was not #{expected_color.toString('hex')}"
