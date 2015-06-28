@@ -1,6 +1,6 @@
-fs = require 'fs'
+require '../util/language'
 config = require 'config'
-js = require '../util/language'
+fs = require 'fs'
 {PNG} = require 'pngjs'
 LayerTools = require './layer_tools'
 

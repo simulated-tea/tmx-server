@@ -1,3 +1,5 @@
+require '../../lib/util/language'
+
 exports.asDictionary = (object) ->
   'c2dictionary': true
   'data':

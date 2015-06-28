@@ -1,3 +1,4 @@
+require '../../lib/util/language'
 buster = require 'buster'
 buster.spec.expose()
 {assert} = buster

@@ -1,5 +1,5 @@
+require '../util/language'
 config = require 'config'
-js = require '../util/language'
 {PNG} = require 'pngjs'
 
 
@@ -21,7 +21,7 @@ class LayerTools
 
   render: ->
     png = new PNG @layerSizeInPixel()
-    for [x, y] in js.carthesianProduct [1..@layerWidth], [1..@layerHeight]
+    for [x, y] in carthesianProduct [1..@layerWidth], [1..@layerHeight]
       tilemapIndex = @data[@layerWidth*(y-1) + (x-1)]
       @tileTools.addTile @tilemap, @getTileCoordinatesOnTilemap(tilemapIndex)..., png, x, y
     png

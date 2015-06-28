@@ -1,3 +1,5 @@
+require '../../lib/util/language'
+
 thisIsWindows = ->
   process.env.OS? && process.env.OS == 'Windows_NT'
 

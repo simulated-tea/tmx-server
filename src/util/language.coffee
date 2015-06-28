@@ -4,7 +4,7 @@ Number::times = (fn) ->
 Array::repeat = (n, list) ->
   [].concat (n.times -> list)...
 
-exports.carthesianProduct = ->
+global.carthesianProduct = ->
   args = [].reverse.call [].slice.call arguments
   end = args.length - 1
   result = []

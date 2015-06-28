@@ -1,5 +1,5 @@
+require '../../lib/util/language'
 fs = require 'fs'
-util = require 'util'
 globExpand = require 'glob-expand'
 platform = require './platform-tools'
 {execSync, spawn} = require 'child_process'

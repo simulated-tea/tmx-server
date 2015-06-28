@@ -1,3 +1,4 @@
+require '../../lib/util/language'
 
 class MapGenerator
   constructor: () ->

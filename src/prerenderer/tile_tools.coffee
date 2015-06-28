@@ -1,5 +1,5 @@
-config = require 'config'
 js = require '../util/language'
+config = require 'config'
 
 tileWidth = config.get 'prerenderer.tiles.widthInPixel'
 tileHeight = config.get 'prerenderer.tiles.heightInPixel'
@@ -13,7 +13,7 @@ exports.addRectangle = addRectangle = (source, src_x, src_y, target, trg_x, trg_
   for y in [0..height-1] # performance critical pixel loop
     for x in [0..width-1]
       _addPixelInPngs source, x_off_src+x, y_off_src+y, target, x_off_trg+x, y_off_trg+y
-  null
+  return
 
 _upperRightCornerPixelOfEnclosingRectangleInTilemap = (x, y) ->
   [

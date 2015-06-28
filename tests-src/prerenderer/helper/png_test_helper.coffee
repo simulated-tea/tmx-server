@@ -1,6 +1,6 @@
-{assert} = require 'buster'
+require '../../../lib/util/language'
 config = require 'config'
-js = require '../../../lib/util/language'
+{assert} = require 'buster'
 
 tileWidth = config.get 'prerenderer.tiles.widthInPixel'
 tileHeight = config.get 'prerenderer.tiles.heightInPixel'
@@ -25,7 +25,7 @@ _checkPngContains = (png, x, y) ->
 
 exports.assertColorOnRectangle = (png, color, tileX, tileY) ->
   [tileOffsetX, tileOffsetY] = _upperRightCornerPixelOfEnclosingRectangleInIsoGrid tileX, tileY
-  for [x,y] in js.carthesianProduct [tileOffsetX..tileOffsetX+tileHeight-1], [tileOffsetY..tileOffsetY+tileHeight-1]
+  for [x,y] in carthesianProduct [tileOffsetX..tileOffsetX+tileHeight-1], [tileOffsetY..tileOffsetY+tileHeight-1]
     index = (png.width*y + x) << 2
     _assertColorOfPixelInPng png, index, color, x, y
 
