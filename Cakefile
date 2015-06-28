@@ -4,6 +4,7 @@ colors = require 'colors'
 {exec, spawn} = require 'child_process'
 rimraf = require 'rimraf'
 config = require 'config'
+{series} = require 'async'
 
 ip = config.get 'server.ip'
 port = config.get 'server.port'
@@ -28,13 +29,17 @@ task 'clean', ->
   rimraf './lib', ->
   rimraf './test', ->
 
-
+#==============================================================================
 
 withCompiled = (file, callback) ->
   if isThere file+'.js'
     callback require file
   else
     console.log "Required library #{file} for task not found. Did you 'build' the project?"
+
+wait = (time, func) -> setTimeout func, time
+
+#==============================================================================
 
 task 't', 'shortcut: test', -> invoke 'test'
 task 'test', 'shortcut: run:test', -> invoke 'run:test'
@@ -52,21 +57,21 @@ task 'run:app', ->
 
 task 'rpi', 'shortcut: run:profile:image', -> invoke 'run:profile:image'
 task 'run:profile:image', ->
-  withCompiled './lib/util/platform-tools', (platform) ->
-    withCompiled './lib/TMXServer', (TMXServer) ->
+  platform = null; server = null
+  series [
+    (next) -> withCompiled './lib/TMXServer',     (TMXServer) -> next null
+    (next) ->
+      withCompiled './lib/util/platform-tools', (pl) -> platform = pl; next null
+    (next) ->
       server = spawn 'node', ['--prof', 'index.js'], 'stdio': 'inherit'
-      setTimeout (->
-          exec "curl http://#{ip}:#{port}/image?x=0&y=0", ->
-          setTimeout (->
-              exec "curl http://#{ip}:#{port}/image?x=0&y=0", ->
-              setTimeout (->
-                  exec "curl http://#{ip}:#{port}/image?x=0&y=0", ->
-                    platform.kill server
-              ), 500
-          ), 500
-      ), 500
-
-
+      wait 500,                                               -> next null
+    (next) -> exec "curl http://#{ip}:#{port}/image?x=0&y=0", -> next null
+    (next) -> wait 500,                                       -> next null
+    (next) -> exec "curl http://#{ip}:#{port}/image?x=0&y=0", -> next null
+    (next) -> wait 500,                                       -> next null
+    (next) -> exec "curl http://#{ip}:#{port}/image?x=0&y=0", -> next null
+    (next) -> platform.kill server
+  ]
 
 runServerWatcher = null
 getServerWatcher = (options) ->

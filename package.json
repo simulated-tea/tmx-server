@@ -3,6 +3,7 @@
     "node": ">= 2.0.0"
   },
   "devDependencies": {
+    "async": "^1.2.1",
     "buster": "^0.7.18",
     "coffee-script": "^1.9.1",
     "glob-expand": "^0.1.0",
