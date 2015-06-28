@@ -10,8 +10,8 @@ exports.addTile = (source, src_x, src_y, target, trg_x, trg_y) ->
 exports.addRectangle = addRectangle = (source, src_x, src_y, target, trg_x, trg_y, width, height) ->
   [x_off_src, y_off_src] = _upperRightCornerPixelOfEnclosingRectangleInTilemap src_x, src_y
   [x_off_trg, y_off_trg] = _upperRightCornerPixelOfEnclosingRectangleInIsoGrid trg_x, trg_y
-  for y in [0..width-1] # performance critical pixel loop
-    for x in [0..height-1]
+  for y in [0..height-1] # performance critical pixel loop
+    for x in [0..width-1]
       _addPixelInPngs source, x_off_src+x, y_off_src+y, target, x_off_trg+x, y_off_trg+y
   null
 
