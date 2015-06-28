@@ -10,16 +10,18 @@ tMapWidth = config.get 'resources.grassland.widthInTiles'
 tMapHeight = config.get 'resources.grassland.heightInTiles'
 
 class Prerenderer
+  tilemap: {}
   constructor: () ->
-    this
-
-  to: (response, mapDescription) ->
-    that = @
+    tilemap = @tilemap
     fs.createReadStream 'resources/grassland_tiles.png'
       .pipe new PNG filterType: 4
       .on 'parsed', ->
-        mapPng = that.buildPng @, mapDescription
-        mapPng.pack().pipe(response)
+        tilemap.grassland = @
+    @
+
+  to: (response, mapDescription) ->
+    mapPng = @buildPng @tilemap.grassland, mapDescription
+    mapPng.pack().pipe(response)
 
   buildPng: (tilemap, mapDescription) ->
     mapWidthInTiles = mapDescription.width

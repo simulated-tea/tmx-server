@@ -30,19 +30,19 @@ _addPixelInPngs = (source, x, y, target, u, v) ->
   pixel_a = source.data
   pixel_b = target.data
 
-  red_a   = pixel_a.readUInt8 src_idx
-  green_a = pixel_a.readUInt8 src_idx + 1
-  blue_a  = pixel_a.readUInt8 src_idx + 2
-  alpha_a = pixel_a.readUInt8 src_idx + 3
+  red_a   = pixel_a.readUInt8 src_idx,     true
+  green_a = pixel_a.readUInt8 src_idx + 1, true
+  blue_a  = pixel_a.readUInt8 src_idx + 2, true
+  alpha_a = pixel_a.readUInt8 src_idx + 3, true
 
-  red_b   = pixel_b.readUInt8 dst_idx
-  green_b = pixel_b.readUInt8 dst_idx + 1
-  blue_b  = pixel_b.readUInt8 dst_idx + 2
-  alpha_b = pixel_b.readUInt8 dst_idx + 3
+  red_b   = pixel_b.readUInt8 dst_idx,     true
+  green_b = pixel_b.readUInt8 dst_idx + 1, true
+  blue_b  = pixel_b.readUInt8 dst_idx + 2, true
+  alpha_b = pixel_b.readUInt8 dst_idx + 3, true
 
   chi = alpha_b*(255-alpha_a)/255
   alpha_o = alpha_a + chi
-  pixel_b[dst_idx    ] = (red_a  *alpha_a + red_b  *chi)/alpha_o
-  pixel_b[dst_idx + 1] = (green_a*alpha_a + green_b*chi)/alpha_o
-  pixel_b[dst_idx + 2] = (blue_a *alpha_a + blue_b *chi)/alpha_o
-  pixel_b[dst_idx + 3] = alpha_o
+  pixel_b.writeUInt8 (red_a  *alpha_a + red_b  *chi)/alpha_o, dst_idx,     true
+  pixel_b.writeUInt8 (green_a*alpha_a + green_b*chi)/alpha_o, dst_idx + 1, true
+  pixel_b.writeUInt8 (blue_a *alpha_a + blue_b *chi)/alpha_o, dst_idx + 2, true
+  pixel_b.writeUInt8 alpha_o,                                 dst_idx + 3, true

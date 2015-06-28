@@ -57,8 +57,14 @@ task 'run:profile:image', ->
       server = spawn 'node', ['--prof', 'index.js'], 'stdio': 'inherit'
       setTimeout (->
           exec "curl http://#{ip}:#{port}/image?x=0&y=0", ->
-            platform.kill server
-      ), 400
+          setTimeout (->
+              exec "curl http://#{ip}:#{port}/image?x=0&y=0", ->
+              setTimeout (->
+                  exec "curl http://#{ip}:#{port}/image?x=0&y=0", ->
+                    platform.kill server
+              ), 500
+          ), 500
+      ), 500
 
 
 
