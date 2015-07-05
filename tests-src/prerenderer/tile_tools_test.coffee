@@ -46,7 +46,7 @@ describe 'compositing', ->
   white_translucent = new Buffer 'ffffff7f', 'hex'
 
   for [existing_color,  added_color,       expected_color] in [
-    [black_transparent, white_translucent, new Buffer('ffffff7f', 'hex')]
+    [black_transparent, white_translucent, white_translucent]
     [black_translucent, white_translucent, new Buffer('a9a9a9be', 'hex')]
     [black_opaque,      white_translucent, new Buffer('7f7f7fff', 'hex')]
     [white_translucent, black_opaque,      black_opaque]
@@ -55,11 +55,11 @@ describe 'compositing', ->
     [white_opaque,      black_transparent, white_opaque]
   ]
     do (existing_color, added_color, expected_color) ->
-      it "combines #{existing_color.toString('hex')} and #{added_color.toString('hex')} correctly ", ->
-        existing = { width: 0, data: existing_color.slice() }
+      it "combines #{existing_color.toString('hex')} and #{added_color.toString('hex')} correctly", ->
+        existing = { width: 0, data: new Buffer(existing_color) }
         added =    { width: 0, data: added_color }
 
         tile._addPixelInPngs added, 0, 0, existing, 0, 0
 
-        assert.equals existing.data, expected_color,
+        assert existing.data.equals expected_color,
           "#{existing.data.toString('hex')} was not #{expected_color.toString('hex')}"
