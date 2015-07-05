@@ -2,23 +2,29 @@ require '../util/language'
 config = require 'config'
 fs = require 'fs'
 {PNG} = require 'pngjs'
+{EventEmitter} = require 'events'
 LayerTools = require './layer_tools'
 
-class Prerenderer
-  tilemaps: {
-    default: 'grassland'
-  }
-  constructor: () ->
-    tilemap = @tilemaps
+class Prerenderer extends EventEmitter
+  constructor: ->
+    @tilemaps = { default: 'grassland' }
+    that = @
     fs.createReadStream 'resources/grassland_tiles.png'
       .pipe new PNG filterType: 4
       .on 'parsed', ->
-        tilemap.grassland = @
-    @
+        unless that.tilemaps.grassland?
+          that.tilemaps.grassland = @
+          that.emit 'ready'
 
-  to: (response, mapDescription) ->
-    layerTool = new LayerTools mapDescription.layers[0], @tilemaps.grassland
+  to: (response, mapDescription, callback) ->
+    layer = mapDescription.layers[0]
+    #cheat:
+    layer.width = 18
+    layer.height = 50
+
+    layerTool = new LayerTools layer, @tilemaps.grassland
     layerPng = layerTool.render()
-    layerPng.pack().pipe(response)
+    layerPng.pack().pipe response
+    layerPng.on 'end', callback if callback?
 
 module.exports = Prerenderer

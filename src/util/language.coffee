@@ -4,6 +4,8 @@ Number::times = (fn) ->
 Array::repeat = (n, list) ->
   [].concat (n.times -> list)...
 
+global.wait = (time, func) -> setTimeout func, time
+
 global.carthesianProduct = ->
   args = [].reverse.call [].slice.call arguments
   end = args.length - 1
