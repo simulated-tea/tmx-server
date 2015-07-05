@@ -7,20 +7,18 @@ http = require 'http'
 
 TMXServer = require '../lib/TMXServer'
 
-describe "TMX Server", ->
+describe 'TMX Server', ->
   tmxServer = null
 
   beforeAll (done) ->
     tmxServer = new TMXServer()
-    tmxServer.on 'ready', ->
+    tmxServer.on 'ready', done ->
       tmxServer.start()
-      done()
 
   afterAll (done) ->
-    tmxServer.stop ->
-      done()
+    tmxServer.stop done
 
-  it "answers to image requests", (done) ->
+  it 'answers to image requests', (done) ->
     @timeout = 400
     req = http.request net.exampleUrl.image, (res) ->
       assert res.statusCode, 200
@@ -38,7 +36,7 @@ describe "TMX Server", ->
 
     req.end()
 
-  it "answers to map requests - currently c2 specific", (done) ->
+  it 'answers to map requests - currently c2 specific', (done) ->
     req = http.request net.exampleUrl['map-in-dictionary'], (res) ->
       assert res.statusCode, 200
       assert res.statusMessage, 'OK'
