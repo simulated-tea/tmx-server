@@ -3,12 +3,11 @@ buster.spec.expose()
 net = require '../lib/util/net-tools'
 http = require 'http'
 {PNG} = require 'pngjs'
-{assert, assertions, refute} = buster
+{assert, refute} = buster
 
 TMXServer = require '../lib/TMXServer'
-#assertions.throwOnFailure = false
 
-describe "=>TMX Server", ->
+describe "TMX Server", ->
   tmxServer = null
 
   beforeAll (done) ->
@@ -29,14 +28,13 @@ describe "=>TMX Server", ->
       assert.equals res.headers['access-control-allow-origin'],
         'http://'+req.connection.localAddress+':'+req.connection.localPort
       res.pipe new PNG filterType: 4
-        .on 'parsed', ->
+        .on 'parsed', done ->
           assert.isNumber @width
           assert.isNumber @height
           assert @readable
-          done()
 
     req.on 'error', done (e) ->
-      assertions.fail()
+      refute true
 
     req.end()
 
