@@ -60,7 +60,6 @@ class TMXServer extends EventEmitter
       params = (url.parse req.url, true).query
       console.log "Request for image at x: #{params.x}, y: #{params.y}"
       mapDescription = @mapGenerator.get params
-      @prerender.to res, mapDescription, ->
-        req.connection.destroy() # for testing -- do i really want this?
+      @prerender.to res, mapDescription
 
 module.exports = TMXServer

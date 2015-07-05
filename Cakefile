@@ -52,7 +52,9 @@ task 'r', 'shortcut: run', -> invoke 'run'
 task 'run', 'shortcut: run:app', -> invoke 'run:app'
 task 'run:app', ->
   withCompiled './lib/TMXServer', (TMXServer) ->
-    TMXServer.start()
+    tmxServer = new TMXServer()
+    tmxServer.on 'ready', ->
+      tmxServer.start()
 
 
 task 'rpi', 'shortcut: run:profile:image', -> invoke 'run:profile:image'
