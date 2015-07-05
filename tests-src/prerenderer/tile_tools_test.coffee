@@ -61,4 +61,5 @@ describe 'compositing', ->
 
         tile._addPixelInPngs added, 0, 0, existing, 0, 0
 
-        assert.equals existing.data, expected_color, "#{existing.data.toString('hex')} was not #{expected_color.toString('hex')}"
+        assert.equals existing.data, expected_color,
+          "#{existing.data.toString('hex')} was not #{expected_color.toString('hex')}"

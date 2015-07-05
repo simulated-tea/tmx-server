@@ -38,5 +38,20 @@ describe "TMX Server", ->
 
     req.end()
 
-  it "answers to map requests", ->
-    assert true
+  it "answers to map requests - currently c2 specific", (done) ->
+    req = http.request net.exampleUrl['map-in-dictionary'], (res) ->
+      assert res.statusCode, 200
+      assert res.statusMessage, 'OK'
+      assert.equals res.headers['access-control-allow-origin'],
+        'http://'+req.connection.localAddress+':'+req.connection.localPort
+        res.on 'data', done (chunk) ->
+          payload = JSON.parse chunk.toString 'utf8'
+          assert.isTrue payload.c2dictionary
+          mapdata = payload.data
+          assert.defined mapdata
+          assert.equals mapdata.z, 0
+
+    req.on 'error', done (e) ->
+      refute true
+
+    req.end()
