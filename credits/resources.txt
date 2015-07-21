@@ -2,3 +2,8 @@ grassland_tiles.png
 * CC-BY-SA 3.0, https://creativecommons.org/licenses/by-sa/3.0/
 * Clint Bellanger, and others
 * src: http://opengameart.org/content/grassland-tileset
+
+splines.coffee
+* public domain
+* Georg MacKerron (mackerron.com), F N Fritsch, R E Carlson
+* http://blog.mackerron.com/2011/01/01/javascript-cubic-splines/
